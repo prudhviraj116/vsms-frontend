@@ -5,6 +5,7 @@ import { logincontext } from '../App';
 
 const VideoApp = ({ setView }) => {
   const [date, setDate] = useState('');
+  const [batchNumber, setBatchNumber] = useState('');
   const [videos, setVideos] = useState([]);
   const [showVideos, setShowVideos] = useState(false);
   const [[isAuthenticated, setIsAuthenticated], [token, setToken]] = useContext(logincontext);
