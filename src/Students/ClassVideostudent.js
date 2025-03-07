@@ -5,7 +5,6 @@ import { logincontext } from '../App';
 
 const VideoApp = ({ setView }) => {
   const [date, setDate] = useState('');
-  const [batchNumber, setBatchNumber] = useState('');
   const [videos, setVideos] = useState([]);
   const [showVideos, setShowVideos] = useState(false);
   const [[isAuthenticated, setIsAuthenticated], [token, setToken]] = useContext(logincontext);
@@ -14,25 +13,20 @@ const VideoApp = ({ setView }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Retrieve profile data from localStorage if available
         const storedProfile = JSON.parse(localStorage.getItem('profile'));
         if (storedProfile) {
           setProfile(storedProfile);
         } else if (isAuthenticated && token) {
-          // Fetch the user profile from the API if not in localStorage
           const profileResp = await axios.get('http://127.0.0.1:8000/studentportal/view_loginuser_profile/', {
-            headers: { 'Authorization': 'token ' + token }
+            headers: { Authorization: 'token ' + token },
           });
           setProfile(profileResp.data);
           localStorage.setItem('profile', JSON.stringify(profileResp.data));
         }
 
-        // Retrieve date and videos from localStorage if available
         const savedDate = localStorage.getItem('date');
         const savedVideos = localStorage.getItem('videos');
-        if (savedDate) {
-          setDate(savedDate);
-        }
+        if (savedDate) setDate(savedDate);
         if (savedVideos) {
           setVideos(JSON.parse(savedVideos));
           setShowVideos(true);
@@ -47,7 +41,7 @@ const VideoApp = ({ setView }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchVideos(); // Fetch videos based on user input
+    fetchVideos();
   };
 
   const handleBackToForm = () => {
@@ -64,28 +58,23 @@ const VideoApp = ({ setView }) => {
       }
 
       const response = await axios.get('http://127.0.0.1:8000/studentportal/daily_video', {
-        params: {
-          date: date,
-          batch: profile.batch,
-        },
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        params: { date, batch: profile.batch },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.status === 200) {
         console.log('API Response:', response.data);
         setVideos(response.data);
-        localStorage.setItem('videos', JSON.stringify(response.data)); // Store data in localStorage
+        localStorage.setItem('videos', JSON.stringify(response.data));
         setShowVideos(true);
-        localStorage.setItem('date', date); // Store date in localStorage
+        localStorage.setItem('date', date);
       } else {
         console.error('Unexpected response status:', response.status);
         setShowVideos(false);
       }
     } catch (error) {
       console.error('Error fetching videos:', error.response ? error.response.data : error.message);
-      setShowVideos(false); // Optionally hide video list if an error occurs
+      setShowVideos(false);
     }
   };
 
@@ -96,16 +85,11 @@ const VideoApp = ({ setView }) => {
           <input
             type="text"
             value={profile.batch || ''}
-            onChange={(e) => setBatchNumber(e.target.value)}
-            placeholder='Enter Batch Number'
+            placeholder="Enter Batch Number"
             hidden
+            readOnly
           />
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
           <button type="submit">Submit</button>
         </form>
       )}
