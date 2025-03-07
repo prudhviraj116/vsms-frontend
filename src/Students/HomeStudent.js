@@ -5,6 +5,7 @@ import '../Students/HomeStudent.css'; // Make sure this path is correct
 import VideoApp from '../Students/ClassVideostudent';
 import UserProfile from '../Students/Profile'; // Import UserProfile component
 import StudentNotificationCenter from '../Students/StudentNotificationCenter';
+import StudentInfoForm from '../Students/StudentInfoForm';
 import StudentLogin1 from '../Students/StudentLogin';
 
 
